@@ -5,7 +5,7 @@ import { Search, X, Hash } from "lucide-react";
 import { useHashtag } from "../../hooks/useHashtag";
 import { useAuth } from "../../hooks/AuthContext";
 
-const CommunitySidebar = () => {
+const CommunitySidebar = ({ sidebarOpen }) => {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const CommunitySidebar = () => {
     }
   }, [user]);
 
-  // ✅ 커스텀 이벤트 리스너 추가
+  //  커스텀 이벤트 리스너
   useEffect(() => {
     const handleSubscriptionChange = () => {
       console.log("🔔 구독 변경 감지! 사이드바 업데이트 중...");
@@ -48,7 +48,7 @@ const CommunitySidebar = () => {
       alert("검색어를 입력해주세요!");
       return;
     }
-    navigate(`/community/search/${keyword.trim()}`);
+    navigate(`/community/search?keyword=${encodeURIComponent(keyword.trim())}`);
   };
 
   const handleClear = () => {
@@ -67,7 +67,16 @@ const CommunitySidebar = () => {
   };
 
   return (
-    <div className="xl:block hidden">
+    <div
+      className={`
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+      lg:translate-x-0 
+      fixed lg:static inset-y-0 left-0 z-10
+      w-80 bg-white border-r shadow-lg lg:shadow-none
+      transition-transform duration-300 ease-in-out
+      flex flex-col
+    `}
+    >
       <div className="min-w-80 border-r flex flex-col h-full bg-white p-4">
         {/*검색창 컨테이너 */}
         <div className="w-full my-4">
@@ -78,7 +87,7 @@ const CommunitySidebar = () => {
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="검색어를 입력하세요"
-              className="w-full pl-5 pr-14 py-3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent"
+              className="w-full pl-5 pr-14 py-3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
             />
 
             {keyword && (
@@ -91,7 +100,7 @@ const CommunitySidebar = () => {
             )}
 
             <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-rose-500 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-violet-500 transition-colors"
               onClick={handleSearch}
             >
               <Search size={20} />
@@ -101,7 +110,7 @@ const CommunitySidebar = () => {
 
         <Link
           to="/community/search"
-          className="text-gray-600 hover:text-rose-500 transition-colors mb-4"
+          className="text-gray-600 hover:text-violet-500 transition-colors mb-4"
         >
           <button className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg w-full">
             <Search size={20} />
@@ -112,7 +121,7 @@ const CommunitySidebar = () => {
         {/* 구독 중인 해시태그 섹션 */}
         <div className="mt-6 w-full border-t-2 pt-4">
           <h3 className="text-gray-700 font-semibold mb-3 flex items-center gap-2">
-            <Hash size={20} className="text-rose-500" />
+            <Hash size={20} className="text-violet-500" />
             구독 중인 해시태그
           </h3>
 
@@ -152,12 +161,12 @@ const CommunitySidebar = () => {
                     <button
                       key={index}
                       onClick={() => handleHashtagClick(hashtag)}
-                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-rose-50 transition-colors group flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-violet-50 transition-colors group flex items-center gap-2"
                     >
-                      <span className="text-rose-500 group-hover:text-rose-600 font-medium">
+                      <span className="text-violet-500 group-hover:text-violet-600 font-medium">
                         #
                       </span>
-                      <span className="text-gray-700 group-hover:text-rose-600 text-sm">
+                      <span className="text-gray-700 group-hover:text-violet-600 text-sm">
                         {cleanTag}
                       </span>
                     </button>

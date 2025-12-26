@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, BarChart3, Users, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../hooks/AuthContext';
@@ -13,10 +13,24 @@ const MainPage = () => {
 
     const quickActions = [
         { icon: Calendar, label: '플래너', path: '/planner', color: 'from-blue-400 to-cyan-400', description: '일정과 할 일을 관리하세요' },
-        { icon: BarChart3, label: '트래커', path: '/tracker', color: 'from-emerald-400 to-teal-400', description: '하루를 기록하세요' },
+        { icon: BarChart3, label: '트래커', path: '/tracker?mode=todo', color: 'from-emerald-400 to-teal-400', description: '하루를 기록하세요' },
         { icon: Users, label: '협업공간', path: '/workspace', color: 'from-violet-400 to-purple-400', description: '다른 사용자와 함께 작업하세요' },
         { icon: MessageSquare, label: '커뮤니티', path: '/community', color: 'from-pink-400 to-rose-400', description: '다른 사용자와 소통하세요' }
     ];
+
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (hash) {
+            const params = new URLSearchParams(hash.substring(1));
+            const accessToken = params.get('token');
+
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+                window.history.replaceState(null, '', window.location.pathname);
+                window.location.reload();
+            }
+        }
+    }, []);
 
     return (
         <div className="flex-1 overflow-y-auto bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -29,7 +43,7 @@ const MainPage = () => {
                             <h1 className="text-3xl font-bold mb-2">
                                 {user?.username ? `${user.username}님, 환영합니다!` : '환영합니다!'} 👋
                             </h1>
-                            <p className="text-blue-100 text-lg">GRWM</p>
+                            <p className="text-blue-100 text-lg">모두ING</p>
                         </div>
                     </div>
                 </div>
@@ -59,23 +73,6 @@ const MainPage = () => {
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                @keyframes fade-in {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                .animate-fade-in {
-                    animation: fade-in 0.6s ease-out;
-                }
-            `}</style>
         </div>
     );
 };
